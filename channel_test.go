@@ -57,3 +57,23 @@ func TestInOutChannel(t *testing.T) {
 	OnlyOutChannel(channel)
 	time.Sleep(2 * time.Second)
 }
+
+func BufferIn(channel chan<- string, number int) {
+	channel <- fmt.Sprintf("Hello %v", number)
+}
+
+func BufferOut(channel <-chan string) {
+	fmt.Println(<-channel)
+}
+
+func TestBufferedChannel(t *testing.T) {
+	channel := make(chan string, 5)
+	defer close(channel)
+
+	for i := 0; i <= 100; i++ {
+		go BufferIn(channel, i)
+		go BufferOut(channel)
+	}
+
+	time.Sleep(5 * time.Second)
+}
