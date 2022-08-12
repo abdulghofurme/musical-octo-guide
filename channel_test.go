@@ -77,3 +77,24 @@ func TestBufferedChannel(t *testing.T) {
 
 	time.Sleep(5 * time.Second)
 }
+
+func TestRangeChannel(t *testing.T) {
+	channel := make(chan string, 5)
+
+	go func() {
+		for i := 0; i <= 100; i++ {
+			BufferIn(channel, i)
+		}
+		close(channel)
+	}()
+
+	for data := range channel {
+		fmt.Println(data)
+	}
+}
+
+func TestGoroutinesVSIteration(t *testing.T) {
+	for i := 0; i <= 100; i++ {
+		fmt.Println("Hello", i)
+	}
+}
