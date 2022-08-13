@@ -116,6 +116,8 @@ func TestSelectChannel(t *testing.T) {
 		case data := <-channel2:
 			fmt.Println("Data :", data)
 			i++
+		default:
+			fmt.Println("Menunggu data")
 		}
 	}
 }
