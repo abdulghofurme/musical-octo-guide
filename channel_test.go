@@ -16,7 +16,7 @@ func TestCreateChannel(t *testing.T) {
 	}()
 
 	data := <-channel
-	fmt.Println(data)
+	t.Log(data)
 
 	time.Sleep(2 * time.Second)
 }
@@ -33,7 +33,7 @@ func TestChannelAsParameter(t *testing.T) {
 	go GiveMeResponse(channel)
 
 	data := <-channel
-	fmt.Println(data)
+	t.Log(data)
 
 	time.Sleep(2 * time.Second)
 }
@@ -43,9 +43,9 @@ func OnlyInChannel(channel chan<- string) {
 	channel <- "Abdul Ghofur"
 }
 
-func OnlyOutChannel(channel <-chan string) {
+func OnlyOutChannel(t *testing.T, channel <-chan string) {
 	data := <-channel
-	fmt.Println(data)
+	t.Log(data)
 }
 
 func TestInOutChannel(t *testing.T) {
@@ -54,7 +54,7 @@ func TestInOutChannel(t *testing.T) {
 
 	go OnlyInChannel(channel)
 
-	OnlyOutChannel(channel)
+	OnlyOutChannel(t, channel)
 	time.Sleep(2 * time.Second)
 }
 
@@ -62,8 +62,8 @@ func BufferIn(channel chan<- string, number int) {
 	channel <- fmt.Sprintf("Hello %v", number)
 }
 
-func BufferOut(channel <-chan string) {
-	fmt.Println(<-channel)
+func BufferOut(t *testing.T, channel <-chan string) {
+	t.Log(<-channel)
 }
 
 func TestBufferedChannel(t *testing.T) {
@@ -72,7 +72,7 @@ func TestBufferedChannel(t *testing.T) {
 
 	for i := 0; i <= 100; i++ {
 		go BufferIn(channel, i)
-		go BufferOut(channel)
+		go BufferOut(t, channel)
 	}
 
 	time.Sleep(5 * time.Second)
@@ -89,13 +89,13 @@ func TestRangeChannel(t *testing.T) {
 	}()
 
 	for data := range channel {
-		fmt.Println(data)
+		t.Log(data)
 	}
 }
 
 func TestGoroutinesVSIteration(t *testing.T) {
 	for i := 0; i <= 100; i++ {
-		fmt.Println("Hello", i)
+		t.Log("Hello", i)
 	}
 }
 
@@ -111,13 +111,13 @@ func TestSelectChannel(t *testing.T) {
 	for i := 0; i < 2; {
 		select {
 		case data := <-channel1:
-			fmt.Println("Data :", data)
+			t.Log("Data :", data)
 			i++
 		case data := <-channel2:
-			fmt.Println("Data :", data)
+			t.Log("Data :", data)
 			i++
 		default:
-			fmt.Println("Menunggu data")
+			t.Log("Menunggu data")
 		}
 	}
 }

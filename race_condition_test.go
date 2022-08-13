@@ -1,7 +1,6 @@
 package golang_goroutines
 
 import (
-	"fmt"
 	"testing"
 	"time"
 )
@@ -18,5 +17,5 @@ func TestRaceCondition(t *testing.T) {
 	}
 
 	time.Sleep(10 * time.Second)
-	fmt.Println("Sum =", sum)
+	t.Log("Sum =", sum)
 }
