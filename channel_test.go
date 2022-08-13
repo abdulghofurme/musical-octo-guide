@@ -98,3 +98,24 @@ func TestGoroutinesVSIteration(t *testing.T) {
 		fmt.Println("Hello", i)
 	}
 }
+
+func TestSelectChannel(t *testing.T) {
+	channel1 := make(chan string)
+	defer close(channel1)
+	channel2 := make(chan string)
+	defer close(channel2)
+
+	go BufferIn(channel1, 1)
+	go BufferIn(channel2, 2)
+
+	for i := 0; i < 2; {
+		select {
+		case data := <-channel1:
+			fmt.Println("Data :", data)
+			i++
+		case data := <-channel2:
+			fmt.Println("Data :", data)
+			i++
+		}
+	}
+}
