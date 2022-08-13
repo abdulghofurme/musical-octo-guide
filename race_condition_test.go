@@ -6,18 +6,16 @@ import (
 	"time"
 )
 
-func TestRaceCondition(t *testing.T) {
+func TestIteration(t *testing.T) {
 	sum := 0
 
 	for i := 1; i <= 1000; i++ {
-		go func() {
-			for j := 1; j <= 100; j++ {
-				sum++
-			}
-		}()
+		for j := 1; j <= 10; j++ {
+			time.Sleep(1 * time.Millisecond)
+			sum++
+		}
 	}
 
-	time.Sleep(10 * time.Second)
 	t.Log("Sum =", sum)
 }
 
@@ -27,7 +25,8 @@ func TestRaceConditionMutex(t *testing.T) {
 
 	for i := 1; i <= 1000; i++ {
 		go func() {
-			for j := 1; j <= 100; j++ {
+			for j := 1; j <= 10; j++ {
+				time.Sleep(1 * time.Millisecond)
 				mutex.Lock()
 				sum++
 				mutex.Unlock()
@@ -35,6 +34,22 @@ func TestRaceConditionMutex(t *testing.T) {
 		}()
 	}
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
+	t.Log("Sum =", sum)
+}
+
+func TestRaceCondition(t *testing.T) {
+	sum := 0
+
+	for i := 1; i <= 1000; i++ {
+		go func() {
+			for j := 1; j <= 10; j++ {
+				time.Sleep(1 * time.Millisecond)
+				sum++
+			}
+		}()
+	}
+
+	time.Sleep(5 * time.Second)
 	t.Log("Sum =", sum)
 }
