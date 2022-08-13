@@ -53,3 +53,37 @@ func TestRaceCondition(t *testing.T) {
 	time.Sleep(5 * time.Second)
 	t.Log("Sum =", sum)
 }
+
+type BankAccount struct {
+	RWMutex sync.RWMutex
+	Balance int
+}
+
+func (account *BankAccount) AddBalance(number int) {
+	account.RWMutex.Lock()
+	account.Balance += number
+	account.RWMutex.Unlock()
+}
+
+func (account *BankAccount) GetBalance() (balance int) {
+	account.RWMutex.RLock()
+	balance = account.Balance
+	account.RWMutex.RUnlock()
+	return
+}
+
+func TestRWMutex(t *testing.T) {
+	account := BankAccount{}
+
+	for i := 0; i < 1000; i++ {
+		go func() {
+			for j := 0; j < 10; j++ {
+				account.AddBalance(1)
+				t.Log("Balance:", account.GetBalance())
+			}
+		}()
+	}
+
+	time.Sleep(5 * time.Second)
+	t.Log("Total Balance:", account.GetBalance())
+}
